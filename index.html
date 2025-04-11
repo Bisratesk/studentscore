@@ -1,79 +1,111 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>studentscore</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.5/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-SgOJa3DmI69IUzQ2PVdRZhwQ+dy64/BUtbMJw1MZ8t5HZApcHrRKUc4W0kG879m7" crossorigin="anonymous">
-  </head>
-<style>
-    body {
-      background-color: #82868a;
-    }
-    .card {
-      margin-bottom: 1rem;
-    }
-  </style>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.5/dist/css/bootstrap.min.css" rel="stylesheet">
+    <title>Student Grade Evaluator</title>
+
+    <style>
+        body {
+    background-color: #f8f9fa;
+}
+
+.container {
+    max-width: 600px;
+}
+
+.card {
+    border-radius: 8px;
+}
+
+h2 {
+    color: #007bff;
+}
+    </style>
 </head>
 <body>
-  <div class="container mt-5">
-    <h2 class="text-center mb-4">📘 Student Grade Evaluator</h2>
-    <div id="result"></div>   // empty div
-  </div>
 
-  <script>
-    const students = [
-      { name: "Selam", scores: [85, 90, 78, 92] },
-      { name: "Kebede", scores: [60, 55, 45, 30] },
-      { name: "Almaz", scores: [95, 98, 92, 89] },
-      { name: "Biniyam", scores: [35, 38, 34, 40] },
+    <div class="container mt-5">
+        <h2 class="text-center">Student Grade Evaluation System</h2>
+        
+        <div class="card p-4 shadow">
+            <form id="gradeForm">
+                <div class="mb-3">
+                    <label for="studentName" class="form-label">Enter Your Name:</label>
+                    <input type="text" class="form-control" id="studentName" placeholder="John Doe" required>
+                </div>
+                
+                <label class="form-label">Enter Your Scores (5 Courses)</label>
+                <div class="row">
+                    <div class="col-md-4 mb-2">
+                        <input type="number" class="form-control" id="score1" placeholder="Course 1" required>
+                    </div>
+                    <div class="col-md-4 mb-2">
+                        <input type="number" class="form-control" id="score2" placeholder="Course 2" required>
+                    </div>
+                    <div class="col-md-4 mb-2">
+                        <input type="number" class="form-control" id="score3" placeholder="Course 3" required>
+                    </div>
+                    <div class="col-md-4 mb-2">
+                        <input type="number" class="form-control" id="score4" placeholder="Course 4" required>
+                    </div>
+                    <div class="col-md-4 mb-2">
+                        <input type="number" class="form-control" id="score5" placeholder="Course 5" required>
+                    </div>
+                </div>
+                
+                <button type="button" class="btn btn-primary mt-3" onclick="submitGrades()">Submit</button>
+            </form>
+        </div>
+
+        <div id="result" class="mt-4 text-center"></div>
+    </div>
+
+    <script>
+// ✅ Functions for calculations
+const calculateTotal = scores => scores.reduce((sum, score) => sum + score, 0);
+const calculateAverage = scores => calculateTotal(scores) / scores.length;
+const assignGrade = avg => avg >= 90 ? "A+" : avg >= 80 ? "A" : avg >= 70 ? "B" : avg >= 60 ? "C" : avg >= 50 ? "D" : "F";
+const isPassed = scores => !scores.some(score => score < 35);
+
+// ✅ Handling Form Submission
+function submitGrades() {
+    const name = document.getElementById("studentName").value;
+    const scores = [
+        parseFloat(document.getElementById("score1").value),
+        parseFloat(document.getElementById("score2").value),
+        parseFloat(document.getElementById("score3").value),
+        parseFloat(document.getElementById("score4").value),
+        parseFloat(document.getElementById("score5").value),
     ];
 
-    // Arrow functions
-    const getTotal = scores => scores.reduce((sum, s) => sum + s, 0);//function used to combine values
-    const getAverage = scores => getTotal(scores) / scores.length;
-    const getGrade = avg => {
-      if (avg >= 90) return "A+";
-      else if (avg >= 80) return "A";
-      else if (avg >= 70) return "B";
-      else if (avg >= 60) return "C";
-      else if (avg >= 50) return "D";
-      else return "F";
-    };
-    const isPassed = scores => !scores.some(score => score < 35);
+    if (!name || scores.some(isNaN)) {
+        alert("Please enter valid information.");
+        return;
+    }
 
-    const evaluatedStudents = students.map(student => {
-      const total = getTotal(student.scores);
-      const avg = getAverage(student.scores);
-      const grade = getGrade(avg);
-      const passed = isPassed(student.scores);
-      return {
-        name: student.name,
-        total,
-        average: avg.toFixed(2),
-        grade,
-        status: passed ? "Pass " : "Fail "
-      };
-    });
+    const total = calculateTotal(scores);
+    const average = calculateAverage(scores);
+    const grade = assignGrade(average);
+    const passed = isPassed(scores);
 
-    // Output to HTML
-    const resultDiv = document.getElementById("result");
+    alert(`Dear ${name}, you have ${passed ? "passed 🎉" : "failed 😞"}!`);
 
-    evaluatedStudents.forEach(s => {    //creates a bootstrap card
-      resultDiv.innerHTML += `
-        <div class="card shadow-sm">
-          <div class="card-body">
-            <h5 class="card-title">👤 ${s.name}</h5>
-            <p class="card-text">
-               <strong>Total:</strong> ${s.total}<br>
-               <strong>Average:</strong> ${s.average}<br>
-               <strong>Grade:</strong> ${s.grade}<br>
-               <strong>Status:</strong> ${s.status}
-            </p>
-          </div>
+    
+    document.getElementById("result").innerHTML = `
+        <div class="card shadow p-4">
+            <h3>Grade Summary for ${name}</h3>
+            <p><strong>Total Score:</strong> ${total}</p>
+            <p><strong>Average Score:</strong> ${average.toFixed(2)}</p>
+            <p><strong>Grade:</strong> ${grade}</p>
+            <p style="color: ${passed ? 'green' : 'red'};"><strong>Status:</strong> ${passed ? "Pass ✅" : "Fail ❌"}</p>
         </div>
-      `;
-    });
-  </script>
+    `;
+}
+    </script>
+
+
+
 </body>
 </html>
