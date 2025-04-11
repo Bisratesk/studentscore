@@ -63,13 +63,13 @@ h2 {
     </div>
 
     <script>
-// ✅ Functions for calculations
+//  Functions for calculations
 const calculateTotal = scores => scores.reduce((sum, score) => sum + score, 0);
 const calculateAverage = scores => calculateTotal(scores) / scores.length;
 const assignGrade = avg => avg >= 90 ? "A+" : avg >= 80 ? "A" : avg >= 70 ? "B" : avg >= 60 ? "C" : avg >= 50 ? "D" : "F";
 const isPassed = scores => !scores.some(score => score < 35);
 
-// ✅ Handling Form Submission
+//  Handling Form Submission
 function submitGrades() {
     const name = document.getElementById("studentName").value;
     const scores = [
@@ -90,7 +90,7 @@ function submitGrades() {
     const grade = assignGrade(average);
     const passed = isPassed(scores);
 
-    alert(`Dear ${name}, you have ${passed ? "passed 🎉" : "failed 😞"}!`);
+    alert(`Dear ${name}, you have ${passed ? "passed " : "failed "}!`);
 
     
     document.getElementById("result").innerHTML = `
@@ -99,7 +99,7 @@ function submitGrades() {
             <p><strong>Total Score:</strong> ${total}</p>
             <p><strong>Average Score:</strong> ${average.toFixed(2)}</p>
             <p><strong>Grade:</strong> ${grade}</p>
-            <p style="color: ${passed ? 'green' : 'red'};"><strong>Status:</strong> ${passed ? "Pass ✅" : "Fail ❌"}</p>
+            <p style="color: ${passed ? 'green' : 'red'};"><strong>Status:</strong> ${passed ? "Pass " : "Fail "}</p>
         </div>
     `;
 }
